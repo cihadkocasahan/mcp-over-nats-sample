@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "nats-demo": {
+      "command": "<PROJE>/target/release/local-proxy.exe",
+      "args": [],
+      "env": {
+        "NATS_URL": "nats://localhost:4222",
+        "MCP_SUBJECT": "mcp.demo"
+      }
+    },
+    "nats-cloud": {
+      "command": "<PROJE>/target/release/local-proxy.exe",
+      "args": [],
+      "env": {
+        "NATS_URL": "tls://connect.ngs.global:4222",
+        "NATS_CREDS": "<CREDS>/synadia.creds",
+        "MCP_SUBJECT": "mcp.demo"
+      }
+    }
+  }
+}

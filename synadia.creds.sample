@@ -1,0 +1,18 @@
+-----BEGIN NATS USER JWT-----
+REPLACE_WITH_YOUR_USER_JWT_FROM_SYNADIA_CLOUD
+------END NATS USER JWT------
+
+************************* IMPORTANT *************************
+NKEY Seed printed below can be used to sign and prove identity.
+NKEYs are sensitive and should be treated as secrets.
+
+-----BEGIN USER NKEY SEED-----
+REPLACE_WITH_YOUR_USER_NKEY_SEED
+------END USER NKEY SEED------
+
+*************************************************************
+
+Bu bir SAMPLE dosyadır, gerçek kimlik bilgisi içermez.
+Gerçek dosyayı Synadia Cloud UI > Get Connected > Download Credentials
+ile indirin ve proje DIŞINDA saklayın (ör. secrets/synadia.creds — gitignore'lıdır).
+Kullanım: NATS_CREDS ortam değişkenine dosyanın tam yolunu verin.

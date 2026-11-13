@@ -1,0 +1,7 @@
+target/
+secrets/
+*.creds
+bin/
+
+# Oturum dökümleri — repo'ya girmez (eski yol/ad + hassas içerik)
+NATS_*_2026-*.md
