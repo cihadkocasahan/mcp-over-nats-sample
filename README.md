@@ -35,15 +35,21 @@ A single NATS subject plus one inbox per client is enough. Requests/responses an
 ## Requirements
 
 - Rust (cargo) — to build. Only the compiled `.exe` files need to be copied to the remote PC; Rust is not required there.
-- For the local demo: `nats-server` (bundled under `bin/` in this repo).
+- For the local demo: NATS Server v2.15.3 for Windows x64 is bundled under `bin/`. [Source and verified checksums](bin/README.md). On Linux/macOS, use the corresponding upstream build.
 - For Synadia Cloud: an account and a `.creds` file (see below).
 
 ## Build
 
 ```bash
-cargo build --release
+cargo build --locked --release
 # binaries: target/release/{local-proxy,remote-bridge,demo-server}.exe
 ```
+
+The three binary sources are in `src/bin/`. On Linux/macOS, the compiled files
+have the same names without `.exe`.
+
+This is a free example for exploring the transport design and adapting it to your
+own projects.
 
 ## Environment variables
 
@@ -163,7 +169,7 @@ For the cloud, add `NATS_URL="tls://connect.ngs.global:4222"` + `NATS_CREDS="<CR
 
 ```bash
 # 1) NATS server
-bin/nats-server-v2.15.3-windows-amd64/nats-server.exe -p 4222
+bin/nats-server-v2.15.3-windows-amd64/nats-server.exe -a 127.0.0.1 -p 4222
 
 # 2) Bridge (separate terminal)
 target/release/remote-bridge.exe
@@ -264,9 +270,18 @@ Expected: an `initialize` response and `"text":"15"` for `add`. For Synadia, add
 
 ## Security
 
-- The real `.creds` never enters the repo: `.gitignore` includes `*.creds`, `secrets/`, `target/`, `bin/`.
+- The real `.creds` never enters the repo: `.gitignore` excludes `*.creds`, `/secrets/`, `/target/` and local session transcripts. The bundled broker contains no credentials or local configuration.
 - Only the placeholder [`synadia.creds.sample`](synadia.creds.sample) is in the repo.
 - A `.creds` file contains a JWT + nkey seed; treat it like a password, do not share it.
+
+- The local command binds to loopback. For a LAN demo, explicitly choose the broker's LAN address and configure authentication, subject permissions and firewall access before connecting another PC.
+
+## Example limits
+
+This sample keeps one child MCP server per client inbox until the bridge stops;
+it has no idle-session cleanup. Keep the proxy's stdin open while waiting for
+responses. NATS Core does not store traffic for disconnected clients. These are
+limits of this small example.
 
 ## Troubleshooting
 
@@ -287,3 +302,8 @@ You use this example **at your own risk**; the authors accept no liability for a
 
 - NATS (official): [nats.io](https://nats.io) · server source: [github.com/nats-io/nats-server](https://github.com/nats-io/nats-server)
 - Synadia Cloud: [cloud.synadia.com](https://cloud.synadia.com) · documentation: [docs.synadia.com](https://docs.synadia.com)
+
+## Related work
+
+- [ExtViaNats](https://github.com/cihadkocasahan/ext-via-nats) — another NATS/MCP example, applying the transport to a Chrome extension.
+- [More projects and technical profile](https://github.com/cihadkocasahan)

@@ -4,9 +4,10 @@ Amaç: bir MCP isteğinin bu PC'den NATS üzerinden uzak PC'ye gidip orada tool 
 
 ## 0) Hazırlık
 
-- **Yerel demo** için bu PC'de NATS çalışmalı: `bin\nats-server-v2.15.3-windows-amd64\nats-server.exe -p 4222`. **Cloud demo** için gerekmez.
-- VM'e **log'lu yeni binary'leri** kopyala (üzerine yaz): `target\release\remote-bridge.exe` + `target\release\demo-server.exe` → VM Desktop. VM'deki eski bridge'i durdurup yenisini başlat.
-- Bu PC'deki `local-proxy.exe` zaten yeni sürüm.
+- Üç örnek programı `cargo build --locked --release` ile derleyin.
+- **Aynı PC'deki yerel demo** için `bin\nats-server-v2.15.3-windows-amd64\nats-server.exe -a 127.0.0.1 -p 4222` komutunu çalıştırın. LAN/VM demosunda broker'ın LAN adresini, kimlik doğrulamayı ve güvenlik duvarı erişimini yapılandırın. **Cloud demo** için yerel broker gerekmez.
+- `target\release\remote-bridge.exe` ve `target\release\demo-server.exe` dosyalarını VM'de aynı klasöre kopyalayın. Bu kopyayı başlatmadan önce eski köprüyü durdurun.
+- Bu PC'de `local-proxy.exe` dosyasını `target\release` klasöründen çalıştırın veya aşağıda tam yolunu kullanın.
 
 ## 1) Terminal B — uzak/VM (sunucu tarafı)
 
@@ -54,10 +55,6 @@ $env:NATS_URL="tls://connect.ngs.global:4222"; $env:NATS_CREDS="C:\yol\synadia.c
 ```
 
 Aynı `id=2` iki terminalde de görünür: istek NATS'ten geçti, karşıda `add` çalıştı, yanıt döndü. İki terminali **yan yana** koyup ekran görüntüsü al; oklarla `-> NATS` / `-> child` / `<- child` / `<- NATS` sırasını işaretle.
-
-Gerçek yakalama (üst: VM `remote-bridge`, alt: bu PC `local-proxy`):
-
-![Ping-pong demo ekran görüntüsü](docs/images/demo-ping-pong.png)
 
 ## 4) MCP istemcisi ile alternatif
 

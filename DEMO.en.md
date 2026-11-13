@@ -4,9 +4,10 @@ Goal: show **live in two terminals** that an MCP request travels from this PC ov
 
 ## 0) Preparation
 
-- For the **local demo**, NATS must run on this PC: `bin\nats-server-v2.15.3-windows-amd64\nats-server.exe -p 4222`. Not needed for the **cloud demo**.
-- Copy the **new logged binaries** to the VM (overwrite): `target\release\remote-bridge.exe` + `target\release\demo-server.exe` → VM Desktop. Stop the old bridge on the VM and start the new one.
-- `local-proxy.exe` on this PC is already the new build.
+- Build the three sample programs with `cargo build --locked --release`.
+- For a **same-machine local demo**, start `bin\nats-server-v2.15.3-windows-amd64\nats-server.exe -a 127.0.0.1 -p 4222`. For a LAN/VM demo, bind to the broker's LAN address and configure authentication and firewall access. No local broker is needed for the **cloud demo**.
+- Copy `target\release\remote-bridge.exe` and `target\release\demo-server.exe` together to a folder on the VM. Stop any old bridge before starting this copy.
+- Run `local-proxy.exe` from this PC's `target\release` folder, or use its full path below.
 
 ## 1) Terminal B — remote/VM (server side)
 
@@ -54,10 +55,6 @@ The cursor waits on stdin. Paste these two lines:
 ```
 
 The same `id=2` appears in both terminals: the request crossed NATS, `add` ran on the other side, and the response came back. Put the two terminals **side by side** and take a screenshot; mark the `-> NATS` / `-> child` / `<- child` / `<- NATS` order with arrows.
-
-Real capture (top: VM `remote-bridge`, bottom: this PC `local-proxy`):
-
-![Ping-pong demo screenshot](docs/images/demo-ping-pong.png)
 
 ## 4) Alternative with an MCP client
 

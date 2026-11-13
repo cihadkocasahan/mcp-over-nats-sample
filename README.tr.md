@@ -35,15 +35,21 @@ Tek bir NATS subject'i + istemci başına bir inbox yeterlidir. İstek/yanıt ve
 ## Gereksinimler
 
 - Rust (cargo) — derlemek için. Uzak PC'ye sadece derlenmiş `.exe` kopyalanabilir, Rust gerekmez.
-- Yerel demo için: `nats-server` (bu repoda `bin/` altında hazır).
+- Yerel demo için Windows x64 NATS Server v2.15.3, `bin/` altında hazırdır. [Kaynak ve doğrulanmış dosya özetleri](bin/README.md). Linux/macOS için aynı resmi sürümün uygun paketini kullanın.
 - Synadia Cloud için: bir hesap ve `.creds` dosyası (aşağıya bakın).
 
 ## Derleme
 
 ```bash
-cargo build --release
+cargo build --locked --release
 # binary'ler: target/release/{local-proxy,remote-bridge,demo-server}.exe
 ```
+
+Üç çalıştırılabilir dosyanın kaynakları `src/bin/` altındadır. Linux/macOS'ta
+derlenen dosyalar aynı adları `.exe` uzantısı olmadan kullanır.
+
+Taşıma kurgusunu incelemek ve kendi projelerinize uyarlamak için ücretsiz bir
+örnektir.
 
 ## Ortam değişkenleri
 
@@ -163,7 +169,7 @@ Cloud için `env`'e `NATS_URL="tls://connect.ngs.global:4222"` + `NATS_CREDS="<C
 
 ```bash
 # 1) NATS sunucusu
-bin/nats-server-v2.15.3-windows-amd64/nats-server.exe -p 4222
+bin/nats-server-v2.15.3-windows-amd64/nats-server.exe -a 127.0.0.1 -p 4222
 
 # 2) Köprü (ayrı terminal)
 target/release/remote-bridge.exe
@@ -264,9 +270,18 @@ Beklenen: `initialize` yanıtı ve `add` için `"text":"15"`. Synadia için ayn�
 
 ## Güvenlik
 
-- Gerçek `.creds` repoya girmez: `.gitignore` `*.creds`, `secrets/`, `target/`, `bin/` içerir.
+- Gerçek `.creds` repoya girmez: `.gitignore`, `*.creds`, `/secrets/`, `/target/` ve yerel oturum dökümlerini dışarıda tutar. Birlikte verilen broker'da kimlik bilgisi veya yerel yapılandırma yoktur.
 - Repoda yalnızca placeholder'lı [`synadia.creds.sample`](synadia.creds.sample) bulunur.
 - `.creds` dosyası JWT + nkey seed içerir; parola gibi davran, paylaşma.
+
+- Yerel komut yalnızca loopback adresini dinler. LAN demosunda broker'ın LAN adresini açıkça seçin; başka bir PC'yi bağlamadan önce kimlik doğrulama, subject izinleri ve güvenlik duvarı erişimini yapılandırın.
+
+## Örneğin sınırları
+
+Bu örnek, istemci inbox'ı başına bir MCP alt sürecini köprü durana kadar tutar;
+boştaki oturumları otomatik temizlemez. Yanıtları beklerken proxy'nin stdin'ini
+açık tutun. NATS Core, bağlantısı kopuk istemciler için trafiği saklamaz.
+Bunlar bu küçük örneğin sınırlarıdır.
 
 ## Sorun giderme
 
@@ -287,3 +302,8 @@ Bu örneği **kendi riskinizle** kullanırsınız; yazarlar bundan doğacak herh
 
 - NATS (resmî): [nats.io](https://nats.io) · sunucu kaynağı: [github.com/nats-io/nats-server](https://github.com/nats-io/nats-server)
 - Synadia Cloud: [cloud.synadia.com](https://cloud.synadia.com) · doküman: [docs.synadia.com](https://docs.synadia.com)
+
+## İlgili çalışmalar
+
+- [ExtViaNats](https://github.com/cihadkocasahan/ext-via-nats) — NATS/MCP taşıma yaklaşımını Chrome eklentisine uygulayan başka bir örnek.
+- [Diğer projeler ve teknik profil](https://github.com/cihadkocasahan)
